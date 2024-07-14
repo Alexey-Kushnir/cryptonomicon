@@ -9,26 +9,41 @@ export default {
       graph: [],
     };
   },
+
+  created() {
+    const tickersData = localStorage.getItem('cryptonomicon-list');
+    if (tickersData) {
+      this.tickers = JSON.parse(tickersData);
+      this.tickers.forEach(({ name }) => this.subscribeToUpdates(name));
+    }
+  },
+
   methods: {
+    subscribeToUpdates(tickerName) {
+      setInterval(async () => {
+        const f = await fetch(
+          `https://min-api.cryptocompare.com/data/price?fsym=${tickerName}&tsyms=USD&api_key=37939f7099f6e733c6cf9f7664a23d49d8cb5e592ad10bafa19eac633a9c2629`
+        );
+        const data = await f.json();
+        this.tickers.find((t) => t.name === tickerName).price =
+          data.USD > 1 ? data.USD.toFixed(2) : data.USD.toPrecision(2);
+        ``;
+        if (this?.sel?.name === tickerName) {
+          this.graph.push(data.USD);
+        }
+      }, 5000);
+      this.ticker = '';
+    },
+
     add() {
       const currentTicker = {
         name: this.ticker.toUpperCase(),
         price: '_',
       };
       this.tickers.push(currentTicker);
-      setInterval(async () => {
-        const f = await fetch(
-          `https://min-api.cryptocompare.com/data/price?fsym=${currentTicker.name}&tsyms=USD&api_key=37939f7099f6e733c6cf9f7664a23d49d8cb5e592ad10bafa19eac633a9c2629`
-        );
-        const data = await f.json();
-        this.tickers.find((t) => t.name === currentTicker.name).price =
-          data.USD > 1 ? data.USD.toFixed(2) : data.USD.toPrecision(2);
-        ``;
-        if (this?.sel?.name === currentTicker.name) {
-          this.graph.push(data.USD);
-        }
-      }, 3000);
-      this.ticker = '';
+
+      localStorage.setItem('cryptonomicon-list', JSON.stringify(this.tickers));
+      this.subscribeToUpdates(currentTicker.name);
     },
     select(ticker) {
       this.sel = ticker;
@@ -68,9 +83,7 @@ export default {
                 placeholder="Например DOGE"
               />
             </div>
-            <div
-              class="flex bg-white shadow-md p-1 rounded-md shadow-md flex-wrap"
-            >
+            <div class="flex bg-white shadow-md p-1 rounded-md flex-wrap">
               <span
                 class="inline-flex items-center px-2 m-1 rounded-md text-xs font-medium bg-gray-300 text-gray-800 cursor-pointer"
               >
