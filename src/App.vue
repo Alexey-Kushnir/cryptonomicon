@@ -23,11 +23,10 @@ export default {
         const data = await f.json();
         this.tickers.find((t) => t.name === currentTicker.name).price =
           data.USD > 1 ? data.USD.toFixed(2) : data.USD.toPrecision(2);
+        ``;
         if (this?.sel?.name === currentTicker.name) {
           this.graph.push(data.USD);
         }
-        console.log('sel', this.sel);
-        console.log('graph', this.graph);
       }, 3000);
       this.ticker = '';
     },
@@ -162,7 +161,9 @@ export default {
         <h3 class="text-lg leading-6 font-medium text-gray-900 my-8">
           {{ sel.name }} - USD
         </h3>
-        <div class="flex items-end border-gray-600 border-b border-l h-64">
+        <div
+          class="flex items-end border-gray-600 border-b border-l h-64 bg-re"
+        >
           <div
             v-for="(bar, i) in normalizeGraph()"
             :key="i"
@@ -202,4 +203,4 @@ export default {
   </div>
 </template>
 
-<style src="./app.css" scoped></style>
+<style></style>
