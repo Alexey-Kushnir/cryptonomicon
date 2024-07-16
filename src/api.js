@@ -2,17 +2,6 @@ const API_KEY =
   '37939f7099f6e733c6cf9f7664a23d49d8cb5e592ad10bafa19eac633a9c2629';
 const AGGREGATE_INDEX = '5';
 
-// export const loadTickers = (tickers) =>
-//   fetch(
-//     `https://min-api.cryptocompare.com/data/pricemulti?fsyms=${tickers.join(',')}&tsyms=USD&api_key=${API_KEY}`
-//   )
-//     .then((r) => r.json())
-//     .then((rawData) =>
-//       Object.fromEntries(
-//         Object.entries(rawData).map(([key, value]) => [key, value.USD])
-//       )
-//     );
-
 const tickersHandlers = new Map();
 const socket = new WebSocket(
   `wss://streamer.cryptocompare.com/v2?api_key=${API_KEY}`
